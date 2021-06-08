@@ -16,7 +16,7 @@ def load_generator(args, G_weights):
         G = make_proggan(G_weights)
     elif 'StyleGAN2' in gan_type:
         from models.gan_load import make_style_gan2
-        G = make_style_gan2(args['gan_resolution'], G_weights, args['w_shift'])
+        G = make_style_gan2(256, G_weights, args['w_shift'])
     else:
         G = make_sngan(G_weights)
 
