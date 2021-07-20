@@ -28,7 +28,7 @@ class Params(object):
         self.n_steps = int(1e+5)
         self.batch_size = 32
 
-        self.directions_count = None
+        self.directions_count = 30
         self.max_latent_dim = None
 
         self.label_weight = 1.0

@@ -48,7 +48,7 @@ def load_from_dir(root_dir, model_index=None, G_weights=None, shift_in_w=True):
     G = load_generator(args, G_weights)
     deformator = LatentDeformator(
         shift_dim=G.dim_shift,
-        input_dim=args['directions_count'] if 'directions_count' in args.keys() else None,
+        input_dim=args['directions_count'] if 'directions_count' in args.keys() else 30,
         out_dim=args['max_latent_dim'] if 'max_latent_dim' in args.keys() else None,
         type=DEFORMATOR_TYPE_DICT[args['deformator']])
 
@@ -62,7 +62,7 @@ def load_from_dir(root_dir, model_index=None, G_weights=None, shift_in_w=True):
     shift_model_path = os.path.join(models_dir, 'shift_predictor_{}.pt'.format(model_index))
     if os.path.isfile(deformator_model_path):
         deformator.load_state_dict(
-            torch.load(deformator_model_path, map_location=torch.device('cpu')))
+            torch.load(deformator_model_path, map_location=torch.device('cpu')),strict=False)
     if os.path.isfile(shift_model_path):
         shift_predictor.load_state_dict(
             torch.load(shift_model_path, map_location=torch.device('cpu')))
