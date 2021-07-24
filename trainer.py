@@ -2,7 +2,7 @@ import os
 import json
 from enum import Enum
 import torch
-import id_loss
+from metrics import id_loss
 from torch import nn
 from tensorboardX import SummaryWriter
 from torch_tools.modules import DataParallelPassthrough

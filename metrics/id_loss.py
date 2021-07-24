@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from model_irse import Backbone
+from metrics.model_irse import Backbone
 
 
 class IDLoss(nn.Module):
