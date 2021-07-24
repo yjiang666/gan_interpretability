@@ -2,6 +2,7 @@ import os
 import json
 from enum import Enum
 import torch
+import id_loss
 from torch import nn
 from tensorboardX import SummaryWriter
 from torch_tools.modules import DataParallelPassthrough
@@ -26,7 +27,7 @@ class Params(object):
         self.deformator_lr = 0.0001
         self.shift_predictor_lr = 0.0001
         self.n_steps = int(1e+5)
-        self.batch_size = 8
+        self.batch_size = 16
 
         self.directions_count = 30
         self.max_latent_dim = None
@@ -40,6 +41,10 @@ class Params(object):
         self.steps_per_backup = 1000
 
         self.truncation = None
+
+        self.id_loss = True
+        self.id_loss_lambda = 0.1
+        self.id_loss_location = None
 
         for key, val in kwargs.items():
             if val is not None:
@@ -181,10 +186,14 @@ class Trainer(object):
         shift_predictor_opt = torch.optim.Adam(
             shift_predictor.parameters(), lr=self.p.shift_predictor_lr)
 
-        avgs = MeanTracker('percent'), MeanTracker('loss'), MeanTracker('direction_loss'),\
-               MeanTracker('shift_loss')
-        avg_correct_percent, avg_loss, avg_label_loss, avg_shift_loss = avgs
-
+        if self.p.id_loss:
+            avgs = MeanTracker('percent'), MeanTracker('loss'), MeanTracker('direction_loss'),\
+               MeanTracker('shift_loss'), MeanTracker('id_loss')
+            avg_correct_percent, avg_loss, avg_label_loss, avg_shift_loss, avg_id_loss = avgs
+        else:
+            avgs = MeanTracker('percent'), MeanTracker('loss'), MeanTracker('direction_loss'), \
+                   MeanTracker('shift_loss')
+            avg_correct_percent, avg_loss, avg_label_loss, avg_shift_loss = avgs
         recovered_step = self.start_from_checkpoint(deformator, shift_predictor)
         for step in range(recovered_step, self.p.n_steps, 1):
             G.zero_grad()
@@ -209,9 +218,13 @@ class Trainer(object):
             logits, shift_prediction = shift_predictor(imgs, imgs_shifted)
             logit_loss = self.p.label_weight * self.cross_entropy(logits, target_indices)
             shift_loss = self.p.shift_weight * torch.mean(torch.abs(shift_prediction - shifts))
-
-            # total loss
-            loss = logit_loss + shift_loss
+            if self.p.id_loss:
+                id_loss_matric = id_loss.IDLoss(model_path=self.p.id_loss_location).to('cuda:0').eval()
+                id_loss_cal = id_loss_matric(imgs_shifted, imgs, imgs)
+                # total loss
+                loss = logit_loss + shift_loss + self.p.id_loss_lambda*id_loss_cal
+            else:
+                loss = logit_loss + shift_loss
             loss.backward()
 
             if deformator_opt is not None:
@@ -224,7 +237,8 @@ class Trainer(object):
             avg_loss.add(loss.item())
             avg_label_loss.add(logit_loss.item())
             avg_shift_loss.add(shift_loss)
-
+            if id_loss:
+                avg_id_loss.add(id_loss_cal)
             self.log(G, deformator, shift_predictor, step, avgs)
 
 

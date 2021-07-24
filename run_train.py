@@ -47,6 +47,12 @@ def main():
                         help='latent directions search in w-space for StyleGAN2')
     parser.add_argument('--gan_resolution', type=int, default=1024,
                         help='generator out images resolution. Required only for StyleGAN2')
+    parser.add_argument('--id_loss', type=bool, default=True,
+                        help='the cosine similarity between the output image and its source')
+    parser.add_argument('--id_loss_lambda', type=float, default=0.1,
+                        help='weightage for id loss')
+    parser.add_argument('--id_loss_location', type=str, default=None,
+                        help='the location of pretrained model used to compute id loss')
 
     args = parser.parse_args()
     torch.cuda.set_device(args.device)
