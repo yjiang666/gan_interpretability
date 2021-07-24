@@ -7,7 +7,7 @@ SOURCES = {
 #     'anime': 'https://www.dropbox.com/s/9aveavgbluvjeu6/pretrained_anime.tar',
 #     'biggan': 'https://www.dropbox.com/s/zte4oein08ajsij/pretrained_biggan.tar',
 #     'proggan': 'https://www.dropbox.com/s/707xjn1rla8nwqc/pretrained_proggan.tar',
-    'stylegan2': 'https://www.dropbox.com/s/x850ocgerru6o9c/pretrained_stylegan2_ffhq_256.tar',
+    'stylegan2': 'https://www.dropbox.com/s/ks6gytx822i0hzl/pretrained_stylegan2_ffhq_256_w_id_loss.tar',
 }
 
 

@@ -42,10 +42,6 @@ class Params(object):
 
         self.truncation = None
 
-        self.id_loss = True
-        self.id_loss_lambda = 0.1
-        self.id_loss_location = None
-
         for key, val in kwargs.items():
             if val is not None:
                 self.__dict__[key] = val
