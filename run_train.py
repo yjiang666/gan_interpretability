@@ -54,9 +54,9 @@ def main():
     parser.add_argument('--id_loss_location', type=str, default=None,
                         help='the location of pretrained model used to compute id loss')
     parser.add_argument('--lpips_loss', type=bool, default=False,
-                        help='the cosine similarity between the output image and its source')
+                        help='Perceptual Similarities')
     parser.add_argument('--lpips_lambda', type=float, default=0.8,
-                        help='weightage for id loss')
+                        help='weightage for lpips loss')
 
 
 
