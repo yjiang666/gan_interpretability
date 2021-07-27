@@ -252,9 +252,9 @@ class Trainer(object):
             avg_loss.add(loss.item())
             avg_label_loss.add(logit_loss.item())
             avg_shift_loss.add(shift_loss)
-            if id_loss:
+            if self.p.id_loss:
                 avg_id_loss.add(id_loss_cal)
-            if lpips_loss:
+            if self.p.lpips_loss:
                 avg_lpips_loss.add(lpips_loss)
             self.log(G, deformator, shift_predictor, step, avgs)
 
