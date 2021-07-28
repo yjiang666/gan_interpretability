@@ -50,7 +50,7 @@ def load_from_dir(root_dir, model_index=None, G_weights=None, shift_in_w=True):
         shift_dim=G.dim_shift,
         input_dim=args['directions_count'] if 'directions_count' in args.keys() else 30,
         out_dim=args['max_latent_dim'] if 'max_latent_dim' in args.keys() else None,
-        type=DEFORMATOR_TYPE_DICT[args['deformator']])
+        type=DEFORMATOR_TYPE_DICT['proj'])
 
     if 'shift_predictor' not in args.keys() or args['shift_predictor'] == 'ResNet':
         shift_predictor = LatentShiftPredictor(G.dim_shift)

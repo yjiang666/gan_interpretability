@@ -47,7 +47,7 @@ def main():
                         help='latent directions search in w-space for StyleGAN2')
     parser.add_argument('--gan_resolution', type=int, default=1024,
                         help='generator out images resolution. Required only for StyleGAN2')
-    parser.add_argument('--id_loss', type=bool, default=True,
+    parser.add_argument('--id_loss', type=bool, default=False,
                         help='the cosine similarity between the output image and its source')
     parser.add_argument('--id_loss_lambda', type=float, default=0.1,
                         help='weightage for id loss')
@@ -57,7 +57,6 @@ def main():
                         help='Perceptual Similarities')
     parser.add_argument('--lpips_lambda', type=float, default=0.8,
                         help='weightage for lpips loss')
-
 
 
     args = parser.parse_args()
@@ -80,7 +79,7 @@ def main():
                                   out_dim=args.max_latent_dim,
                                   type=DEFORMATOR_TYPE_DICT[args.deformator],
                                   random_init=args.deformator_random_init).cuda()
-
+    print(args.lpips_loss)
     if args.shift_predictor == 'ResNet':
         shift_predictor = LatentShiftPredictor(
             deformator.input_dim, args.shift_predictor_size).cuda()

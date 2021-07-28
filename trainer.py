@@ -184,17 +184,16 @@ class Trainer(object):
         shift_predictor_opt = torch.optim.Adam(
             shift_predictor.parameters(), lr=self.p.shift_predictor_lr)
 
-
-        if self.p.id_loss and not self.p.lpips_loss:
+        if self.p.id_loss == True and self.p.lpips_loss == False:
             avgs = MeanTracker('percent'), MeanTracker('loss'), MeanTracker('direction_loss'), \
                    MeanTracker('shift_loss'), MeanTracker('id_loss')
             avg_correct_percent, avg_loss, avg_label_loss, avg_shift_loss, avg_id_loss = avgs
 
-        elif self.p.id_loss and self.p.lpips_loss :
+        elif self.p.id_loss is True and self.p.lpips_loss == True:
             avgs = MeanTracker('percent'), MeanTracker('loss'), MeanTracker('direction_loss'), \
                    MeanTracker('shift_loss'), MeanTracker('id_loss'), MeanTracker('lpips_loss')
             avg_correct_percent, avg_loss, avg_label_loss, avg_shift_loss, avg_id_loss, avg_lpips_loss = avgs
-        elif not self.p.id_loss and self.p.lpips_loss:
+        elif self.p.id_loss == False and self.p.lpips_loss == True:
             avgs = MeanTracker('percent'), MeanTracker('loss'), MeanTracker('direction_loss'), \
                    MeanTracker('shift_loss'), MeanTracker('lpips_loss')
             avg_correct_percent, avg_loss, avg_label_loss, avg_shift_loss, avg_lpips_loss = avgs
@@ -227,7 +226,7 @@ class Trainer(object):
             logits, shift_prediction = shift_predictor(imgs, imgs_shifted)
             logit_loss = self.p.label_weight * self.cross_entropy(logits, target_indices)
             shift_loss = self.p.shift_weight * torch.mean(torch.abs(shift_prediction - shifts))
-            if self.p.id_loss_location is not None:
+            if self.p.id_loss_location is not None and self.p.id_loss==True:
                 id_loss_matric = id_loss.IDLoss(model_path=self.p.id_loss_location).to('cuda:0').eval()
                 id_loss_cal = id_loss_matric(imgs_shifted, imgs, imgs)
                 # total loss
@@ -235,7 +234,7 @@ class Trainer(object):
             else:
                 loss = logit_loss + shift_loss
 
-            if self.p.lpips_loss:
+            if self.p.lpips_loss==True:
                 lpips = LPIPS(net_type='alex').to('cuda:0').eval()
                 lpips_loss = lpips(imgs_shifted, imgs)
                 loss += self.p.lpips_lambda*lpips_loss
@@ -252,9 +251,9 @@ class Trainer(object):
             avg_loss.add(loss.item())
             avg_label_loss.add(logit_loss.item())
             avg_shift_loss.add(shift_loss)
-            if id_loss:
+            if self.p.id_loss:
                 avg_id_loss.add(id_loss_cal)
-            if lpips_loss:
+            if self.p.id_loss:
                 avg_lpips_loss.add(lpips_loss)
             self.log(G, deformator, shift_predictor, step, avgs)
 
