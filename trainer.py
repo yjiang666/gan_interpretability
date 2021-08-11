@@ -98,6 +98,10 @@ class Trainer(object):
         if should_print:
             out_text = '{}% [step {}]'.format(int(100 * step / self.p.n_steps), step)
             for named_value in stats:
+              stat_name = named_value[0]
+              if stat_name == "id_loss" or stat_name == "lpips_loss":
+                out_text += (' | {}: {:e}'.format(*named_value))
+              else:
                 out_text += (' | {}: {:.2f}'.format(*named_value))
             print(out_text)
         for named_value in stats:
