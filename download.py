@@ -3,11 +3,7 @@ import tarfile
 import argparse
 
 SOURCES = {
-#     'mnist': 'https://www.dropbox.com/s/rzurpt5gzb14a1q/pretrained_mnist.tar',
-#     'anime': 'https://www.dropbox.com/s/9aveavgbluvjeu6/pretrained_anime.tar',
-#     'biggan': 'https://www.dropbox.com/s/zte4oein08ajsij/pretrained_biggan.tar',
-#     'proggan': 'https://www.dropbox.com/s/707xjn1rla8nwqc/pretrained_proggan.tar',
-    'stylegan2': 'https://www.dropbox.com/s/ks6gytx822i0hzl/pretrained_stylegan2_ffhq_256_w_id_loss.tar',
+    'stylegan2': 'https://www.dropbox.com/s/vtygvy0xiw4uvmd/pretrained_stylegan2_ffhq_256_id_24_lpips_5.tar',
 }
 
 
